@@ -42,6 +42,8 @@ struct Butterflies: View {
     @State private var draggedQuadrant: Int?
     @State private var currentQuadrant: Int?
     @State private var highlightedQuadrant: Int?
+    @State private var timer: Timer?
+    @State private var greenHighlightDuration: TimeInterval = 0
     let highlightGenerator = HighlightGenerator(quadrants: quadrants)
     
     let pastelColors: [Color] = [
@@ -71,7 +73,6 @@ struct Butterflies: View {
     
     var quadrantOverlay: some View {
         ZStack {
-            
             Path { path in
                 path.move(to: CGPoint(x: UIScreen.main.bounds.width / 2, y: 0))
                 path.addLine(to: CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height))
@@ -86,23 +87,23 @@ struct Butterflies: View {
                     .position(CGPoint(x: quadrant == 1 || quadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: quadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
             }
             if let draggedQuadrant = draggedQuadrant {
-                            RoundedRectangle(cornerRadius: 0)
-                                .fill(Color.yellow.opacity(0.1))
-                                .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
-                                .position(CGPoint(x: draggedQuadrant == 1 || draggedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: draggedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
-                        }
-                        
-                        if let highlightedQuadrant = highlightedQuadrant, highlightedQuadrant != draggedQuadrant {
-                            RoundedRectangle(cornerRadius: 0)
-                                .fill(Color.blue.opacity(0.1))
-                                .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
-                                .position(CGPoint(x: highlightedQuadrant == 1 || highlightedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: highlightedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
-                        } else if let highlightedQuadrant = highlightedQuadrant, highlightedQuadrant == draggedQuadrant {
-                            RoundedRectangle(cornerRadius: 0)
-                                .fill(Color.green.opacity(0.1))
-                                .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
-                                .position(CGPoint(x: highlightedQuadrant == 1 || highlightedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: highlightedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
-                        }
+                RoundedRectangle(cornerRadius: 0)
+                    .fill(Color.yellow.opacity(0.1))
+                    .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
+                    .position(CGPoint(x: draggedQuadrant == 1 || draggedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: draggedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
+            }
+            
+            if let highlightedQuadrant = highlightedQuadrant, highlightedQuadrant != draggedQuadrant {
+                RoundedRectangle(cornerRadius: 0)
+                    .fill(Color.blue.opacity(0.1))
+                    .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
+                    .position(CGPoint(x: highlightedQuadrant == 1 || highlightedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: highlightedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
+            } else if let highlightedQuadrant = highlightedQuadrant, highlightedQuadrant == draggedQuadrant {
+                RoundedRectangle(cornerRadius: 0)
+                    .fill(Color.green.opacity(0.1))
+                    .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
+                    .position(CGPoint(x: highlightedQuadrant == 1 || highlightedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: highlightedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
+            }
             
         }
     }
@@ -125,9 +126,27 @@ struct Butterflies: View {
         }
     }
     
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if highlightedQuadrant == draggedQuadrant {
+                greenHighlightDuration += 1
+            }
+        }
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
     var body: some View {
         
         ZStack {
+            let formattedGreenHighlightDuration = String(format: "%.0f", greenHighlightDuration)
+            Text("\(formattedGreenHighlightDuration) / 125")
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding()
             ForEach(butterflies.indices, id: \.self) { index in
                 Butterfly(progress: progress, color: butterflyColors[index])
                     .frame(width: 50, height: 50)
@@ -161,17 +180,21 @@ struct Butterflies: View {
                 }
         )
         .onAppear {
-                    for _ in 0..<butterflyCount {
-                        butterflies.append(CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height)))
-                        butterflyColors.append(pastelColors.randomElement()!)
-                    }
-                    withAnimation(Animation.easeInOut(duration: 0.2).repeatForever(autoreverses: false)) {
-                        progress = 2.0
-                    }
-                    
-                    highlightGenerator.start { newQuadrant in
-                        highlightedQuadrant = newQuadrant
-                    }
-                }
+            for _ in 0..<butterflyCount {
+                butterflies.append(CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height)))
+                butterflyColors.append(pastelColors.randomElement()!)
+            }
+            withAnimation(Animation.easeInOut(duration: 0.2).repeatForever(autoreverses: false)) {
+                progress = 2.0
+            }
+            
+            highlightGenerator.start { newQuadrant in
+                highlightedQuadrant = newQuadrant
+            }
+            startTimer()
+        }
+        .onDisappear{
+            stopTimer()
+        }
     }
 }
