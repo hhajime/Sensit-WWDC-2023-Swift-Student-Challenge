@@ -24,9 +24,9 @@ struct SoundGameScreen: View {
     var body: some View {
         ZStack{
             VStack{
-//                playbackControls
+                //                playbackControls
                 touchStats
-//                noteAndMusicTimes
+                //                noteAndMusicTimes
                 Spacer()
             }
             VStack {

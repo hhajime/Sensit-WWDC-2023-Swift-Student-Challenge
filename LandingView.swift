@@ -41,7 +41,7 @@ struct LandingView: View {
                         .font(.title2)
                         .foregroundColor(.yellow)
                         .addGlowEffect(color1: Color(Color.RGBColorSpace.sRGB, red: 255/255, green: 255/255, blue: 102/255, opacity: 0.7), color2: Color(Color.RGBColorSpace.sRGB, red: 255/255, green: 255/255, blue: 0/255, opacity: 0.5), color3: Color(Color.RGBColorSpace.sRGB, red: 204/255, green: 204/255, blue: 0/255, opacity: 0.3))
-                }
+                }.background(.black)
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

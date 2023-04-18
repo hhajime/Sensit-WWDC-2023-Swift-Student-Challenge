@@ -1,6 +1,6 @@
 //
 //  ButterflyView.swift
-//  
+//
 //
 //  Created by Ha Jong Myeong on 2023/04/3.
 //
@@ -39,6 +39,10 @@ struct Butterflies: View {
     @State private var butterflyColors: [Color] = []
     @State private var touchLocation: CGPoint?
     @State private var progress: Double = 0
+    @State private var draggedQuadrant: Int?
+    @State private var currentQuadrant: Int?
+    @State private var highlightedQuadrant: Int?
+    let highlightGenerator = HighlightGenerator(quadrants: quadrants)
     
     let pastelColors: [Color] = [
         Color(red: 255/255, green: 179/255, blue: 186/255),
@@ -47,6 +51,62 @@ struct Butterflies: View {
         Color(red: 255/255, green: 157/255, blue: 135/255),
         Color(red: 255/255, green: 191/255, blue: 176/255)
     ]
+    
+    func quadrant(from point: CGPoint) -> Int? {
+        let midX = UIScreen.main.bounds.width / 2
+        let midY = UIScreen.main.bounds.height / 2
+        
+        if point.x < midX && point.y < midY {
+            return 1
+        } else if point.x >= midX && point.y < midY {
+            return 2
+        } else if point.x < midX && point.y >= midY {
+            return 3
+        } else if point.x >= midX && point.y >= midY {
+            return 4
+        }
+        
+        return nil
+    }
+    
+    var quadrantOverlay: some View {
+        ZStack {
+            
+            Path { path in
+                path.move(to: CGPoint(x: UIScreen.main.bounds.width / 2, y: 0))
+                path.addLine(to: CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height))
+                path.move(to: CGPoint(x: 0, y: UIScreen.main.bounds.height / 2))
+                path.addLine(to: CGPoint(x: UIScreen.main.bounds.width, y: UIScreen.main.bounds.height / 2))
+            }
+            
+            if let quadrant = currentQuadrant {
+                RoundedRectangle(cornerRadius: 0)
+                    .fill(Color.blue.opacity(0.1))
+                    .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
+                    .position(CGPoint(x: quadrant == 1 || quadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: quadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
+            }
+            if let draggedQuadrant = draggedQuadrant {
+                            RoundedRectangle(cornerRadius: 0)
+                                .fill(Color.yellow.opacity(0.1))
+                                .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
+                                .position(CGPoint(x: draggedQuadrant == 1 || draggedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: draggedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
+                        }
+                        
+                        if let highlightedQuadrant = highlightedQuadrant, highlightedQuadrant != draggedQuadrant {
+                            RoundedRectangle(cornerRadius: 0)
+                                .fill(Color.blue.opacity(0.1))
+                                .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
+                                .position(CGPoint(x: highlightedQuadrant == 1 || highlightedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: highlightedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
+                        } else if let highlightedQuadrant = highlightedQuadrant, highlightedQuadrant == draggedQuadrant {
+                            RoundedRectangle(cornerRadius: 0)
+                                .fill(Color.green.opacity(0.1))
+                                .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 2)
+                                .position(CGPoint(x: highlightedQuadrant == 1 || highlightedQuadrant == 3 ? UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width * 3 / 4, y: highlightedQuadrant < 3 ? UIScreen.main.bounds.height / 4 : UIScreen.main.bounds.height * 3 / 4))
+                        }
+            
+        }
+    }
+    
     
     func randomPosition(around point: CGPoint, radius: CGFloat) -> CGPoint {
         let angle = CGFloat.random(in: 0...2 * .pi)
@@ -78,10 +138,13 @@ struct Butterflies: View {
             }
         }
         .edgesIgnoringSafeArea(.all)
+        .overlay(quadrantOverlay)
         .gesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { value in
                     touchLocation = value.location
+                    draggedQuadrant = quadrant(from: touchLocation!) // Update the current quadrant
+                    
                     withAnimation(Animation.easeOut(duration: 5.0)) {
                         for index in butterflies.indices {
                             butterflies[index] = randomPosition(around: touchLocation!, radius: 200)
@@ -90,6 +153,7 @@ struct Butterflies: View {
                 }
                 .onEnded { _ in
                     touchLocation = nil
+                    draggedQuadrant = nil // Clear the current quadrant
                     
                     for index in butterflies.indices {
                         moveButterfly(index: index)
@@ -103,6 +167,10 @@ struct Butterflies: View {
                     }
                     withAnimation(Animation.easeInOut(duration: 0.2).repeatForever(autoreverses: false)) {
                         progress = 2.0
+                    }
+                    
+                    highlightGenerator.start { newQuadrant in
+                        highlightedQuadrant = newQuadrant
                     }
                 }
     }
