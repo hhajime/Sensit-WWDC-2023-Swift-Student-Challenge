@@ -28,24 +28,21 @@ struct CircularNoteView: View {
                         .stroke(Color(.white), lineWidth: 10)
                         .addGlowEffect(color1: Color(Color.RGBColorSpace.sRGB, red: 96/255, green: 252/255, blue: 255/255, opacity: 1), color2: Color(Color.RGBColorSpace.sRGB, red: 44/255, green: 158/255, blue: 238/255, opacity: 1), color3: Color(Color.RGBColorSpace.sRGB, red: 0/255, green: 129/255, blue: 255/255, opacity: 1))
                 )
-                .onChange(of: isPlaying) { _ in
-                    startAnimationIfNeeded()
-                }
                 .onAppear {
                     startAnimationIfNeeded()
                 }
         }
     
     private func startNoteAnimation() {
+        print("note start")
         withAnimation(.linear(duration: 0.8)) {
             noteRadius = innerCircleScale
             noteOpacity = 0
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             onDestroyed()
         }
-        isPaused = false
     }
 
     
@@ -58,8 +55,6 @@ struct CircularNoteView: View {
     private func startAnimationIfNeeded() {
         if isPlaying {
             startNoteAnimation()
-        } else {
-            pauseNoteAnimation()
         }
     }
 }

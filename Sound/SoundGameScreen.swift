@@ -42,6 +42,7 @@ struct SoundGameScreen: View {
         .onAppear(perform: {
             print("d")
             isPlayingAudio = true
+            audioProcessor.setupAudioEngine()
             audioProcessor.audioPlayerNode?.play()
             scheduleNotes()
         })

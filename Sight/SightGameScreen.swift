@@ -14,7 +14,7 @@ struct SightGameScreen: View {
     let backgroundImage = Image("003")
     var body: some View {
         ZStack{
-            SpiderWebView()
+//            SpiderWebView()
             Butterflies()
         } .edgesIgnoringSafeArea(.all)
             .onAppear {
