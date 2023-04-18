@@ -25,7 +25,7 @@ final class AudioProcessor {
 
 // MARK: - Audio Engine Setup
 extension AudioProcessor {
-    private func setupAudioEngine() {
+     func setupAudioEngine() {
         _ = audioEngine.mainMixerNode
         audioEngine.prepare()
         
@@ -34,12 +34,13 @@ extension AudioProcessor {
         let audioFile = try! AVAudioFile(forReading: audioFileURL)
         let audioFormat = audioFile.processingFormat
         
-        if let audioPlayerNode {
+        if let audioPlayerNode = audioPlayerNode {
             audioEngine.attach(audioPlayerNode)
             audioEngine.connect(audioPlayerNode, to: audioEngine.mainMixerNode, format: audioFormat)
             audioPlayerNode.scheduleFile(audioFile, at: nil)
         }
     }
+
 }
 
 // MARK: - FFT Initialization & Execution
