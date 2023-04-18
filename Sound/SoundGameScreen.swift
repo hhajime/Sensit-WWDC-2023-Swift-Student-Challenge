@@ -1,5 +1,5 @@
 //
-//  GameScreen.swift
+//  SoundGameScreen.swift
 //  Sound
 //
 //  Created by Ha Jong Myeong on 2023/04/12.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct GameScreen: View {
+struct SoundGameScreen: View {
     @State private var currentTime: Double = 0
     
     @State var composition: Composition
@@ -121,9 +121,29 @@ struct GameScreen: View {
     }
     
     private var touchStats: some View {
-        Text("\(touchStatus) Streak: \(streakCount)")
-            .font(.largeTitle)
+        VStack{
+            Text(touchStatus)
+                .font(.system(size: 40, weight: .bold))
+                .addGlowEffect(
+                    color1: glowColor(for: touchStatus).0,
+                    color2: glowColor(for: touchStatus).1,
+                    color3: glowColor(for: touchStatus).2
+                )
+            Text("\(streakCount)/\(defaultComposition.count)")
+                .font(.largeTitle)
             .addGlowEffect(color1: Color(Color.RGBColorSpace.sRGB, red: 96/255, green: 252/255, blue: 255/255, opacity: 1), color2: Color(Color.RGBColorSpace.sRGB, red: 44/255, green: 158/255, blue: 238/255, opacity: 1), color3: Color(Color.RGBColorSpace.sRGB, red: 0/255, green: 129/255, blue: 255/255, opacity: 1))    }
+    }
+    
+    private func glowColor(for touchStatus: String) -> (Color, Color, Color) {
+        switch touchStatus {
+        case "Perfect":
+            return (Color.blue, Color.blue.opacity(0.6), Color.blue.opacity(0.3))
+        case "Good":
+            return (Color.green, Color.green.opacity(0.6), Color.green.opacity(0.3))
+        default:
+            return (Color.clear, Color.clear, Color.clear)
+        }
+    }
     
     private func audioPlaybackButtonTapped() {
         if isPlayingAudio {
@@ -142,6 +162,6 @@ struct GameScreen: View {
 struct SoundView: View {
     let backgroundImage = Image("002")
     var body: some View {
-        GameScreen(composition: Composition(notes: defaultComposition)).background(backgroundImage.resizable().ignoresSafeArea())
+        SoundGameScreen(composition: Composition(notes: defaultComposition)).background(backgroundImage.resizable().ignoresSafeArea())
     }
 }
