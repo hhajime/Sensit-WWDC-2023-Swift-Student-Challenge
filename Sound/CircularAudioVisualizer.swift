@@ -81,15 +81,33 @@ struct CircularAudioVisualizer: View {
                 }
                 wooferScale = 1.0 + CGFloat(audioData.reduce(0, +) / Float(Constants.numberOfBars)) * 0.5
             }
+//            detectMissedNotes()
         }
     }
+
+    
+//    private func detectMissedNotes() {
+//        if let earliestNote = activeNotes.map({ (id: $0, time: noteTime(forNoteWithID: $0)) }).min(by: { $0.time! < $1.time! }),
+//            let earliestNoteTime = earliestNote.time {
+//
+//            let timeDifference = abs(currentTime - earliestNoteTime)
+//
+//            if timeDifference > Constants.goodThreshold {
+//                print(timeDifference)
+//                touchStatus = "Wrong"
+//                streakCount = 0
+//                print("wrong")
+//            }
+//        }
+//    }
+
     
     private func noteTime(forNoteWithID id: UUID) -> Double? {
         composition.notes.first(where: { $0.id == id })?.startTime
     }
 
+    
     private func checkTouchAccuracy() {
-        var noteMissed = true
         if let closestNote = activeNotes.map({ (id: $0, time: noteTime(forNoteWithID: $0)) }).min(by: { abs($0.time! - currentTime) < abs($1.time! - currentTime) }),
             let closestNoteTime = closestNote.time {
             let timeDifference = abs(closestNoteTime - currentTime)
@@ -101,19 +119,11 @@ struct CircularAudioVisualizer: View {
             if timeDifference <= Constants.perfectThreshold && timeDifference >= 0.5 {
                 touchStatus = "Perfect"
                 streakCount += 1
-                noteMissed = false
+                activeNotes.remove(closestNote.id)
             } else if timeDifference <= Constants.goodThreshold {
                 touchStatus = "Good"
                 streakCount += 1
-                noteMissed = false
-            } else {
-                touchStatus = "Wrong"
-                streakCount = 0
-                noteMissed = false
-            }
-            if noteMissed == true {
-                touchStatus = "Missed"
-                streakCount = 0
+                activeNotes.remove(closestNote.id)
             }
         }
     }
