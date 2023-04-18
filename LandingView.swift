@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct LandingView: View {
-    let backgroundImage = Image("002")
     var body: some View {
         NavigationView {
             VStack {
@@ -19,15 +18,17 @@ struct LandingView: View {
                     .foregroundColor(Color.white)
             .padding()
             Spacer()
-            NavigationLink(destination: GameScreen(composition: Composition(notes: defaultComposition))
-                .background(backgroundImage.resizable().scaledToFill().ignoresSafeArea())) {
+                NavigationLink(destination: SoundGameScreen(composition: Composition(notes: defaultComposition))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Image("002").resizable().ignoresSafeArea())
+                ) {
                     Text("Sound Explorer")
                         .font(.title3)
                         .addGlowEffect(color1: Color(Color.RGBColorSpace.sRGB, red: 96/255, green: 252/255, blue: 255/255, opacity: 1), color2: Color(Color.RGBColorSpace.sRGB, red: 44/255, green: 158/255, blue: 238/255, opacity: 1), color3: Color(Color.RGBColorSpace.sRGB, red: 0/255, green: 129/255, blue: 255/255, opacity: 1))
                 
                 .padding()
         }
-        NavigationLink(destination: ButterflyView()) {
+        NavigationLink(destination: SightGameScreen()) {
             Text("Sight Explorer")
                 .font(.title3)
                 .addGlowEffect(color1: Color(Color.RGBColorSpace.sRGB, red: 96/255, green: 252/255, blue: 255/255, opacity: 1), color2: Color(Color.RGBColorSpace.sRGB, red: 44/255, green: 158/255, blue: 238/255, opacity: 1), color3: Color(Color.RGBColorSpace.sRGB, red: 0/255, green: 129/255, blue: 255/255, opacity: 1))
@@ -37,7 +38,7 @@ struct LandingView: View {
     Spacer()
 }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(backgroundImage.resizable().ignoresSafeArea())
+    .background(Image("001").resizable().ignoresSafeArea())
 }
     .navigationViewStyle(.stack)}
 }

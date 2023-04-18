@@ -106,14 +106,3 @@ struct Butterflies: View {
         }
     }
 }
-
-struct ButterflyView: View {
-    @StateObject private var audioPlayer = AudioPlayer()
-    private let soundFile = "002"
-    let backgroundImage = Image("002")
-    var body: some View {
-        Butterflies().background(backgroundImage.resizable().ignoresSafeArea())
-            .onAppear{audioPlayer.play(soundFile)}
-            .onDisappear{audioPlayer.stop()}
-    }
-}
