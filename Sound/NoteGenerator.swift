@@ -29,6 +29,7 @@ let defaultComposition: [Note] = [
     Note(startTime: 8.0),
     Note(startTime: 10.0),
     Note(startTime: 11.0),
+    Note(startTime: 12.0),
     Note(startTime: 13.0),
     Note(startTime: 14.0),
     Note(startTime: 16.0),
