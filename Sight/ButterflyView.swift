@@ -90,19 +90,20 @@ struct Butterflies: View {
                 }
                 .onEnded { _ in
                     touchLocation = nil
+                    
                     for index in butterflies.indices {
                         moveButterfly(index: index)
                     }
                 }
         )
         .onAppear {
-            for _ in 0..<butterflyCount {
-                butterflies.append(CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height)))
-                butterflyColors.append(pastelColors.randomElement()!)
-            }
-            withAnimation(Animation.easeInOut(duration: 0.2).repeatForever(autoreverses: false)) {
-                progress = 2.0
-            }
-        }
+                    for _ in 0..<butterflyCount {
+                        butterflies.append(CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height)))
+                        butterflyColors.append(pastelColors.randomElement()!)
+                    }
+                    withAnimation(Animation.easeInOut(duration: 0.2).repeatForever(autoreverses: false)) {
+                        progress = 2.0
+                    }
+                }
     }
 }
