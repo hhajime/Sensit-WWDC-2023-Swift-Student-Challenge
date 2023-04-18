@@ -13,6 +13,10 @@ struct SpiderWebView: View {
         let startPosition = CGPoint(x: x, y: 0) // Starts on Top
         let spiderWeb = SpiderWeb(position: startPosition)
         
+        if spiderWebs.count >= 15 {
+            spiderWebs.removeFirst()
+        }
+        
         spiderWebs.append(spiderWeb)
     }
     
