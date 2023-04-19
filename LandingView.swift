@@ -12,9 +12,9 @@ struct LandingView: View {
         NavigationView {
             VStack {
                 Spacer()
-                Text("Sound & Sight Explorer")
+                Text("Sound & Sight \r\nExplorer")
+                    .multilineTextAlignment(.center)
                     .font(.largeTitle)
-                    .bold()
                     .foregroundColor(Color.white)
                     .padding()
                 Spacer()
