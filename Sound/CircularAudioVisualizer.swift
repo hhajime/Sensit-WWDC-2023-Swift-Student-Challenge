@@ -38,13 +38,13 @@ struct CircularAudioVisualizer: View {
                 RoundedRectangle(cornerRadius: 4)
                     .fill(
                         Color(
-                            hue: 0.5 - Double((audioData[index] / Constants.intensityThreshold) / 5),
+                            hue: 0.4 - Double((audioData[index] / Constants.intensityThreshold) / 5),
                             saturation: 1,
                             brightness: 1,
                             opacity: 0.7
                         )
                     )
-                    .frame(width: 4, height: min(CGFloat(audioData[index] * Constants.intensityFactor), maxBarLength))
+                    .frame(width: 8, height: min(CGFloat(audioData[index] * Constants.intensityFactor), maxBarLength))
                     .modifier(NeonEffect(color: Color.white.opacity(0.75), radius: 4, x: 1, y: 1))
                     .offset(x: 0, y: -innerRadius - min(CGFloat(audioData[index] * Constants.intensityFactor / 2), maxBarLength / 2))
                     .rotationEffect(.degrees(Double(index) / Double(Constants.numberOfBars) * 360))
