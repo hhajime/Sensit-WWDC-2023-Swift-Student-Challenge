@@ -1,6 +1,6 @@
 //
 //  SightGameScreen.swift
-//  Butterfly
+//  Sensia
 //
 //  Created by Ha Jong Myeong on 2023/04/06.
 //
