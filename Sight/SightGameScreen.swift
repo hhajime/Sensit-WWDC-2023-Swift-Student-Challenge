@@ -14,7 +14,6 @@ struct SightGameScreen: View {
     let backgroundImage = Image("003")
     var body: some View {
         ZStack{
-//            SpiderWebView()
             Butterflies()
         } .edgesIgnoringSafeArea(.all)
             .onAppear {
@@ -22,7 +21,7 @@ struct SightGameScreen: View {
                     scrollProgress = 35
                 }
             }
-            .background(backgroundImage.resizable().ignoresSafeArea())
+            .background(.black)
             .onAppear{audioPlayer.play(soundFile)}
             .onDisappear{audioPlayer.stop()}
     }
