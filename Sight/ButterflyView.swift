@@ -9,106 +9,76 @@ import SwiftUI
 
 struct Butterfly: View {
     var progress: Double
-    var color: Color
+    var position: CGPoint
+    var screenSize: CGSize
+    
+    @Environment(\.imageCache) private var cache: ImageCache
+    
+    func gradientColor() -> Color {
+        let xRatio = position.x / screenSize.width
+        let yRatio = position.y / screenSize.height
+        let hue = (xRatio + yRatio) / 2.0
+        return Color(hue: hue - 0.5, saturation: 0.8, brightness: 1.0)
+    }
     
     var body: some View {
-        Group {
-            if progress < 0.333 {
-                Image("flap1")
+        let imageName: String
+        
+        if progress < 0.333 {
+            imageName = "flap1"
+        } else if progress >= 0.333 && progress < 0.666 {
+            imageName = "flap2"
+        } else {
+            imageName = "flap3"
+        }
+        
+        return Group {
+            if let image = cache[imageName] {
+                image
                     .resizable()
                     .scaledToFit()
-                    .colorMultiply(color)
-            } else if progress < 0.666 {
-                Image("flap2")
-                    .resizable()
-                    .scaledToFit()
-                    .colorMultiply(color)
-            } else {
-                Image("flap3")
-                    .resizable()
-                    .scaledToFit()
-                    .colorMultiply(color)
+                    .colorMultiply(gradientColor())
             }
+        }
+    }
+    
+}
+
+struct ImageCacheKey: EnvironmentKey {
+    static let defaultValue: ImageCache = ImageCache()
+}
+
+extension EnvironmentValues {
+    var imageCache: ImageCache {
+        get { self[ImageCacheKey.self] }
+        set { self[ImageCacheKey.self] = newValue }
+    }
+}
+
+class ImageCache {
+    private var cache: [String: Image] = [:]
+    
+    subscript(_ key: String) -> Image? {
+        get {
+            cache[key]
+        }
+        set {
+            cache[key] = newValue
+        }
+    }
+    
+    init() {
+        for imageName in ["flap1", "flap2", "flap3"] {
+            cache[imageName] = Image(imageName)
         }
     }
 }
 
 struct Butterflies: View {
-    @State private var butterflyCount = 30
-    @State private var butterflies: [CGPoint] = []
-    @State private var butterflyColors: [Color] = []
+    @State private var butterflyCount = 75
+    @State private var butterflies: [(CGPoint, Double)] = []
     @State private var touchLocation: CGPoint?
-    @State private var progress: Double = 0
-    @State private var draggedQuadrant: Int?
-    @State private var currentQuadrant: Int?
-    @State private var highlightedQuadrant: Int?
     @State private var timer: Timer?
-    @State private var greenHighlightDuration: TimeInterval = 0
-    let highlightGenerator = HighlightGenerator(quadrants: quadrants)
-    
-    let pastelColors: [Color] = [
-        Color(red: 255/255, green: 179/255, blue: 186/255),
-        Color(red: 248/255, green: 200/255, blue: 220/255),
-        Color(red: 255/255, green: 110/255, blue: 78/255),
-        Color(red: 255/255, green: 157/255, blue: 135/255),
-        Color(red: 255/255, green: 191/255, blue: 176/255)
-    ]
-    
-    func quadrant(from point: CGPoint) -> Int? {
-        let midX = UIScreen.main.bounds.width / 2
-        let midY = UIScreen.main.bounds.height / 2
-        
-        if point.x < midX && point.y < midY {
-            return 1
-        } else if point.x >= midX && point.y < midY {
-            return 2
-        } else if point.x < midX && point.y >= midY {
-            return 3
-        } else if point.x >= midX && point.y >= midY {
-            return 4
-        }
-        
-        return nil
-    }
-    
-    var quadrantOverlay: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Path { path in
-                    path.move(to: CGPoint(x: geometry.size.width / 2, y: 0))
-                    path.addLine(to: CGPoint(x: geometry.size.width / 2, y: geometry.size.height))
-                    path.move(to: CGPoint(x: 0, y: geometry.size.height / 2))
-                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height / 2))
-                }
-                
-                if let quadrant = currentQuadrant {
-                    RoundedRectangle(cornerRadius: 0)
-                        .fill(Color.blue.opacity(0.1))
-                        .frame(width: geometry.size.width / 2, height: geometry.size.height / 2)
-                        .position(CGPoint(x: quadrant == 1 || quadrant == 3 ? geometry.size.width / 4 : geometry.size.width * 3 / 4, y: quadrant < 3 ? geometry.size.height / 4 : geometry.size.height * 3 / 4))
-                }
-                if let draggedQuadrant = draggedQuadrant {
-                    RoundedRectangle(cornerRadius: 0)
-                        .fill(Color.yellow.opacity(0.1))
-                        .frame(width: geometry.size.width / 2, height: geometry.size.height / 2)
-                        .position(CGPoint(x: draggedQuadrant == 1 || draggedQuadrant == 3 ? geometry.size.width / 4 : geometry.size.width * 3 / 4, y: draggedQuadrant < 3 ? geometry.size.height / 4 : geometry.size.height * 3 / 4))
-                }
-                
-                if let highlightedQuadrant = highlightedQuadrant, highlightedQuadrant != draggedQuadrant {
-                    RoundedRectangle(cornerRadius: 0)
-                        .fill(Color.blue.opacity(0.1))
-                        .frame(width: geometry.size.width / 2, height: geometry.size.height / 2)
-                        .position(CGPoint(x: highlightedQuadrant == 1 || highlightedQuadrant == 3 ? geometry.size.width / 4 : geometry.size.width * 3 / 4, y: highlightedQuadrant < 3 ? geometry.size.height / 4 : geometry.size.height * 3 / 4))
-                } else if let highlightedQuadrant = highlightedQuadrant, highlightedQuadrant == draggedQuadrant {
-                    RoundedRectangle(cornerRadius: 0)
-                        .fill(Color.green.opacity(0.1))
-                        .frame(width: geometry.size.width / 2, height: geometry.size.height / 2)
-                        .position(CGPoint(x: highlightedQuadrant == 1 || highlightedQuadrant == 3 ? geometry.size.width / 4 : geometry.size.width * 3 / 4, y: highlightedQuadrant < 3 ? geometry.size.height / 4 : geometry.size.height * 3 / 4))
-                }
-                
-            }
-        }
-    }
     
     func randomPosition(around point: CGPoint, radius: CGFloat) -> CGPoint {
         let angle = CGFloat.random(in: 0...2 * .pi)
@@ -120,18 +90,11 @@ struct Butterflies: View {
     
     func moveButterfly(index: Int) {
         DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 0...2)) {
-            withAnimation(Animation.easeOut(duration: 5)) {
-                butterflies[index] = CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height))
+            withAnimation(Animation.easeOut(duration: 7.5)) {
+                let newPosition = CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height))
+                butterflies[index] = (newPosition, butterflies[index].1)
             }
             moveButterfly(index: index)
-        }
-    }
-    
-    func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if highlightedQuadrant == draggedQuadrant {
-                greenHighlightDuration += 1
-            }
         }
     }
     
@@ -140,40 +103,36 @@ struct Butterflies: View {
         timer = nil
     }
     
+    func butterflySize() -> CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? 25 : 50
+    }
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                let formattedGreenHighlightDuration = String(format: "%.0f", greenHighlightDuration)
-                ProgressBar(value: greenHighlightDuration, maxValue: 125)
-                       .frame(height: 10)
-                       .padding()
-                ForEach(butterflies.indices, id: \.self) { index in
-                    Butterfly(progress: progress, color: butterflyColors[index])
-                        .frame(width: 50, height: 50)
-                        .position(butterflies[index])
+                ForEach(0..<butterflies.count, id: \.self) { index in
+                    Butterfly(progress: butterflies[index].1, position: butterflies[index].0, screenSize: geometry.size)
+                        .frame(width: butterflySize(), height: butterflySize())
+                        .position(butterflies[index].0)
                         .onAppear {
                             moveButterfly(index: index)
                         }
                 }
             }
             .edgesIgnoringSafeArea(.all)
-            .overlay(quadrantOverlay)
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         touchLocation = value.location
-                        draggedQuadrant = quadrant(from: touchLocation!) // Update the current quadrant
-                        
                         withAnimation(Animation.easeOut(duration: 5.0)) {
                             for index in butterflies.indices {
-                                butterflies[index] = randomPosition(around: touchLocation!, radius: 200)
+                                let newPosition = randomPosition(around: touchLocation!, radius: 200)
+                                butterflies[index] = (newPosition, butterflies[index].1)
                             }
                         }
                     }
                     .onEnded { _ in
                         touchLocation = nil
-                        draggedQuadrant = nil // Clear the current quadrant
-                        
                         for index in butterflies.indices {
                             moveButterfly(index: index)
                         }
@@ -181,37 +140,22 @@ struct Butterflies: View {
             )
             .onAppear {
                 for _ in 0..<butterflyCount {
-                    butterflies.append(CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height)))
-                    butterflyColors.append(pastelColors.randomElement()!)
-                }
-                withAnimation(Animation.easeInOut(duration: 0.2).repeatForever(autoreverses: false)) {
-                    progress = 2.0
+                    let position = CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height))
+                    let progress = Double.random(in: 0...1)
+                    butterflies.append((position, progress))
                 }
                 
-                highlightGenerator.start { newQuadrant in
-                    highlightedQuadrant = newQuadrant
+                timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+                    for index in butterflies.indices {
+                        butterflies[index].1 += 0.333
+                        if butterflies[index].1 >= 1.0 {
+                            butterflies[index].1 = 0
+                        }
+                    }
                 }
-                startTimer()
             }
             .onDisappear{
                 stopTimer()
-            }
-        }
-    }
-}
-
-struct ProgressBar: View {
-    var value: Double
-    var maxValue: Double
-    
-    var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 5)
-                    .fill(Color.gray.opacity(0.5))
-                RoundedRectangle(cornerRadius: 5)
-                    .fill(Color.green)
-                    .frame(width: CGFloat(value / maxValue) * geometry.size.width)
             }
         }
     }
