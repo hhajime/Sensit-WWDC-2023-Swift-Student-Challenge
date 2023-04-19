@@ -34,7 +34,7 @@ struct TutorialScreen: View {
                 
                 tutorialStep(text: "2. Listen to the soothing background music that starts to play automatically.")
                 
-                tutorialStep(text: "3. Drag the butterfly dynamically to match the changing highlights in time with the music.")
+                tutorialStep(text: "3. Drag the butterfly dynamically with the music.")
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("For both games, you should feel the music.")
