@@ -8,13 +8,13 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "Sound & Sight Explorer",
+    name: "Sensia",
     platforms: [
         .iOS("15.2")
     ],
     products: [
         .iOSApplication(
-            name: "Sound & Sight Explorer",
+            name: "Sensia",
             targets: ["AppModule"],
             bundleIdentifier: "hajime.Sound---Sight-Explorer",
             teamIdentifier: "7C76V3X7AB",

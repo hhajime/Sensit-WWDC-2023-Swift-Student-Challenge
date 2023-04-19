@@ -1,6 +1,6 @@
 //
 //  NoteGenerator.swift
-//  Sound
+//  Sensia
 //
 //  Created by Ha Jong Myeong on 2023/04/13.
 //
