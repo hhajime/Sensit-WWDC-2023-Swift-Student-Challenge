@@ -1,5 +1,5 @@
 //
-//  SightGameScreen.swift
+//  ButterfliesScreen.swift
 //  Sensia
 //
 //  Created by Ha Jong Myeong on 2023/04/06.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SightGameScreen: View {
+struct ButterfliesScreen: View {
     @State private var scrollProgress: CGFloat = 0
     @StateObject private var audioPlayer = AudioPlayer()
     private let soundFile = "002"

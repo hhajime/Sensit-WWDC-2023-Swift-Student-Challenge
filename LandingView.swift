@@ -28,7 +28,7 @@ struct LandingView: View {
                     
                         .padding()
                 }
-                NavigationLink(destination: SightGameScreen()) {
+                NavigationLink(destination: ButterfliesScreen()) {
                     Text("Butterflies")
                         .font(.title3)
                         .addGlowEffect(color1: Color(Color.RGBColorSpace.sRGB, red: 96/255, green: 252/255, blue: 255/255, opacity: 1), color2: Color(Color.RGBColorSpace.sRGB, red: 44/255, green: 158/255, blue: 238/255, opacity: 1), color3: Color(Color.RGBColorSpace.sRGB, red: 0/255, green: 129/255, blue: 255/255, opacity: 1))
