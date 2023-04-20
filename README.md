@@ -34,7 +34,7 @@ Butterflies offers a visually stunning interactive experience with these feature
 
 #### LGBTQ+ Orientation
 <img width="300" alt="스크린샷 2023-04-21 오전 5 55 21" src="https://user-images.githubusercontent.com/36729917/233485796-a323c545-5739-417b-91cf-9387c364b9f8.png">
-An important aspect of Butterflies is its LGBTQ+ orientation, revealed through vibrant and inclusive displays of the butterflies' true colors. This commitment to promoting diversity and expression creates a unique and impactful experience for users. When you release them from dragging (control), you show their true colors (harmony).
+An important aspect of Butterflies is its LGBTQ+ orientation, revealed through vibrant and inclusive displays of the butterflies' true colors. This commitment to promoting diversity and expression creates a unique and impactful experience for users. When you release them from dragging(control), you show their true colors(harmony).
 
 ### Minimal On-Screen Distractions
 
@@ -49,7 +49,7 @@ A variety of technologies were used to create Sensit, including:
 - Accelerate
 - Combine
 
-These technologies contribute to sophisticated animations for realistic butterfly movements and visuals, performance-enhancing algorithms for smooth user interaction, and audio processing with Fast Fourier Transforms (FFT) and elaborate touch controls in Vibe-in.
+These technologies contribute to sophisticated animations for realistic butterfly movements and visuals, performance-enhancing algorithms for smooth user interaction, and audio processing with Fast Fourier Transforms(FFT) and elaborate touch controls in Vibe-in.
 
 ## Conclusion
 
