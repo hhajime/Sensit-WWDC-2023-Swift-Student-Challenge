@@ -18,7 +18,7 @@ struct Butterfly: View {
         let xRatio = position.x / screenSize.width
         let yRatio = position.y / screenSize.height
         let hue = (xRatio + yRatio) / 2.0
-        return Color(hue: hue - 0.5, saturation: 0.8, brightness: 1.0)
+        return Color(hue: hue - 0.45, saturation: 0.9, brightness: 1.0)
     }
     
     var body: some View {
@@ -79,6 +79,7 @@ struct Butterflies: View {
     @State private var butterflies: [(CGPoint, Double)] = []
     @State private var touchLocation: CGPoint?
     @State private var timer: Timer?
+    let screenSize: CGSize
     
     func randomPosition(around point: CGPoint, radius: CGFloat) -> CGPoint {
         let angle = CGFloat.random(in: 0...2 * .pi)
@@ -91,11 +92,21 @@ struct Butterflies: View {
     func moveButterfly(index: Int) {
         DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 0...2)) {
             withAnimation(Animation.easeOut(duration: 7.5)) {
-                let newPosition = CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height))
+                let newPosition = CGPoint(x: CGFloat.random(in: 0...screenSize.width), y: CGFloat.random(in: 0...screenSize.height))
                 butterflies[index] = (newPosition, butterflies[index].1)
             }
             moveButterfly(index: index)
         }
+    }
+    
+    func randomPositionAroundCenter(radius: CGFloat, screenSize: CGSize) -> CGPoint {
+        let angle = CGFloat.random(in: 0...2 * .pi)
+        let distance = CGFloat.random(in: 0...radius)
+        let centerX = screenSize.width / 2
+        let centerY = screenSize.height / 2
+        let x = centerX + distance * cos(angle)
+        let y = centerY + distance * sin(angle)
+        return CGPoint(x: x, y: y)
     }
     
     func stopTimer() {
@@ -105,6 +116,19 @@ struct Butterflies: View {
     
     func butterflySize() -> CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? 25 : 50
+    }
+    
+    func getCenterRadius() -> CGFloat {
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            return 400 // radius for iPhone
+        case .pad:
+            return 500 // radius for iPad
+        case .mac:
+            return 700 // radius for Mac
+        default:
+            return 500 // default radius
+        }
     }
     
     var body: some View {
@@ -139,8 +163,9 @@ struct Butterflies: View {
                     }
             )
             .onAppear {
+                let centerRadius = getCenterRadius()
                 for _ in 0..<butterflyCount {
-                    let position = CGPoint(x: CGFloat.random(in: 0...UIScreen.main.bounds.width), y: CGFloat.random(in: 0...UIScreen.main.bounds.height))
+                    let position = randomPositionAroundCenter(radius: centerRadius, screenSize: screenSize)
                     let progress = Double.random(in: 0...1)
                     butterflies.append((position, progress))
                 }
