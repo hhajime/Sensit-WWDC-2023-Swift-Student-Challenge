@@ -170,7 +170,7 @@ struct Butterflies: View {
                     butterflies.append((position, progress))
                 }
                 
-                timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+                timer = Timer.scheduledTimer(withTimeInterval: 0.08, repeats: true) { _ in
                     for index in butterflies.indices {
                         butterflies[index].1 += 0.333
                         if butterflies[index].1 >= 1.0 {
