@@ -34,7 +34,7 @@ struct CircularNoteView: View {
         }
     
     private func startNoteAnimation() {
-        print("note start")
+//        print("note start")
         withAnimation(.linear(duration: 0.8)) {
             noteRadius = innerCircleScale
             noteOpacity = 0

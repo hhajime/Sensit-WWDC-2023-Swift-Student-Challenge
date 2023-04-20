@@ -112,9 +112,9 @@ struct CircularAudioVisualizer: View {
             let closestNoteTime = closestNote.time {
             let timeDifference = abs(closestNoteTime - currentTime)
 
-            print("currentTime: \(currentTime)")
-            print("closestNoteTime: \(closestNoteTime)")
-            print("timeDifference: \(timeDifference)")
+//            print("currentTime: \(currentTime)")
+//            print("closestNoteTime: \(closestNoteTime)")
+//            print("timeDifference: \(timeDifference)")
 
             if timeDifference <= Constants.perfectThreshold && timeDifference >= 0.5 {
                 touchStatus = "Perfect"

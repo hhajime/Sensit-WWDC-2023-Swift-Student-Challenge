@@ -40,7 +40,7 @@ struct SoundGameScreen: View {
         }
         .preferredColorScheme(.dark)
         .onAppear(perform: {
-            print("d")
+//            print("d")
             isPlayingAudio = true
             audioProcessor.setupAudioEngine()
             audioProcessor.audioPlayerNode?.play()
