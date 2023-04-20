@@ -21,6 +21,7 @@ struct LandingView: View {
                 NavigationLink(destination: SoundGameScreen(composition: Composition(notes: defaultComposition))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Image("002").resizable().ignoresSafeArea())
+                    .background(.black)
                 ) {
                     Text("Sense with Vibe-in")
                         .foregroundColor(.white)
