@@ -19,6 +19,7 @@ struct SoundGameScreen: View {
     @State private var wooferScale: CGFloat = 1.0
     @State private var activeNotesList: [Note] = []
     @State private var showText = true
+    @State private var showTouchStatus = true
     
     private let audioProcessor = AudioProcessor.sharedInstance
     
@@ -143,16 +144,24 @@ private var playbackControls: some View {
 
 private var touchStats: some View {
     VStack{
-        Text(touchStatus)
-            .font(.system(size: 40, weight: .bold))
-            .addGlowEffect(
-                color1: glowColor(for: touchStatus).0,
-                color2: glowColor(for: touchStatus).1,
-                color3: glowColor(for: touchStatus).2
-            )
-        Text("\(streakCount)/\(defaultComposition.count)")
-            .font(.largeTitle)
-        .addGlowEffect(color1: Color(Color.RGBColorSpace.sRGB, red: 96/255, green: 252/255, blue: 255/255, opacity: 1), color2: Color(Color.RGBColorSpace.sRGB, red: 44/255, green: 158/255, blue: 238/255, opacity: 1), color3: Color(Color.RGBColorSpace.sRGB, red: 0/255, green: 129/255, blue: 255/255, opacity: 1))    }
+        if showTouchStatus {
+            Text(touchStatus)
+                .font(.system(size: 40, weight: .bold))
+                .addGlowEffect(
+                    color1: glowColor(for: touchStatus).0,
+                    color2: glowColor(for: touchStatus).1,
+                    color3: glowColor(for: touchStatus).2
+                )
+            Text("\(streakCount)/\(defaultComposition.count)")
+                .font(.largeTitle)
+            .addGlowEffect(color1: Color(Color.RGBColorSpace.sRGB, red: 96/255, green: 252/255, blue: 255/255, opacity: 1), color2: Color(Color.RGBColorSpace.sRGB, red: 44/255, green: 158/255, blue: 238/255, opacity: 1), color3: Color(Color.RGBColorSpace.sRGB, red: 0/255, green: 129/255, blue: 255/255, opacity: 1))    }
+        }.onAppear {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 12) {
+            withAnimation {
+                showTouchStatus = false
+            }
+        }
+}
 }
 
 private func glowColor(for touchStatus: String) -> (Color, Color, Color) {
