@@ -11,12 +11,17 @@ struct ButterfliesScreen: View {
     @StateObject private var audioPlayer = AudioPlayer()
     private let soundFile = "002"
     var body: some View {
-        ZStack{
-            Butterflies()
-                .background(.black)
+        GeometryReader { geometry in
+            ZStack{
+                Butterflies(screenSize: geometry.size)
+                    .background(.black)
+                Text("🏳️‍🌈")
+                    .font(.system(size: 40))
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            }
+            .onAppear{audioPlayer.play(soundFile)}
+            .onDisappear{audioPlayer.stop()}
         }
-        .onAppear{audioPlayer.play(soundFile)}
-        .onDisappear{audioPlayer.stop()}
     }
-    
 }

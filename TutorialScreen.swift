@@ -30,11 +30,11 @@ struct TutorialScreen: View {
                     .foregroundColor(.white)
                     .padding(.top)
                 
-                tutorialStep(text: "1. Observe the butterfly symbolizing the LGBT community or society appear on the screen.")
+                tutorialStep(text: "1. Observe the butterfly symbolizing the LGBTQ+ community or society appear on the screen.")
 
                 tutorialStep(text: "2. Immerse yourself as soothing background music begins to play, setting the tone for an inclusive and expressive experience.")
 
-                tutorialStep(text: "3. Interact with the LGBT-themed butterfly colony as they gracefully move to the music for a unique experience. When they are set free, they show their true colors.")
+                tutorialStep(text: "3. Interact with the LGBTQ+ themed butterfly colony as they gracefully move to the music for a unique experience. When they are set free, they show their true colors.")
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("I just want you to feel the music, interact with the beautiful screens, and have fun!")
