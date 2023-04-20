@@ -8,20 +8,20 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "Sensia",
+    name: "Sensit",
     platforms: [
         .iOS("15.2")
     ],
     products: [
         .iOSApplication(
-            name: "Sensia",
+            name: "Sensit",
             targets: ["AppModule"],
             bundleIdentifier: "hajime.Sound---Sight-Explorer",
             teamIdentifier: "7C76V3X7AB",
             displayVersion: "1.0",
             bundleVersion: "1",
-            appIcon: .placeholder(icon: .location),
-            accentColor: .presetColor(.cyan),
+            appIcon: .placeholder(icon: .note),
+            accentColor: .presetColor(.pink),
             supportedDeviceFamilies: [
                 .pad,
                 .phone

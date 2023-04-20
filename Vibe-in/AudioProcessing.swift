@@ -1,6 +1,6 @@
 //
 //  AudioProcessing.swift
-//  Sensia
+//  Sensit
 //
 //  Created by Ha Jong Myeong on 2023/04/11.
 //
