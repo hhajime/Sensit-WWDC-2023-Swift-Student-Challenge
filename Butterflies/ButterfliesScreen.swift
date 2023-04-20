@@ -36,10 +36,18 @@ struct ButterfliesScreen: View {
                 Spacer()
                 Spacer()
             }
-            Text("🏳️‍🌈")
-                .font(.system(size: 40))
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            if showText {
+                Text("🏳️‍🌈")
+                    .font(.system(size: 40))
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            }
+        }.onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                withAnimation {
+                    showText = false
+                }
+            }
         }
         .onAppear{audioPlayer.play(soundFile)}
         .onDisappear{audioPlayer.stop()}
