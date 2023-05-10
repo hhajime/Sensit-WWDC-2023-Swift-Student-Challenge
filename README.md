@@ -1,4 +1,4 @@
-# [Accepted]Sensit: A Cutting-Edge Digital Art-Style App
+# [Accepted] Sensit: A Cutting-Edge Digital Art-Style App
 
 Sensit is a cutting-edge digital art-style app that provides users with an immersive visual, auditory, and tactile experience. The application is divided into two unique experiences: Vibe-in and Butterflies.
 
