@@ -1,4 +1,5 @@
 # [Accepted] Sensit: A Cutting-Edge Digital Art-Style App
+![image](https://github.com/hhajime/Sensit-WWDC-2023-Swift-Student-Challenge/assets/36729917/75da4b35-9507-475d-a791-24d35bb193b3)
 
 Sensit is a cutting-edge digital art-style app that provides users with an immersive visual, auditory, and tactile experience. The application is divided into two unique experiences: Vibe-in and Butterflies.
 
